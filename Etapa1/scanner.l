@@ -7,9 +7,9 @@ int cur_line = 1;
 white [ \t]+
 especiais [,;:\(\)\[\]\{\}+\-|*/<>=!&%#\^.$]
 linebreak [\r\n|\r|\n]
-identifier ^[a-zA-Z_][a-zA-Z0-9_]*
+identifier [a-zA-Z_][a-zA-Z0-9_]*
 digit [0-9]
-integer [+|-]?{digit}+
+integer [+-]?{digit}+
 exponent [eE][+-]?{integer}
 real {integer}("."{integer}){exponent}?
 character "'".{1}"'"
