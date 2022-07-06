@@ -1,4 +1,5 @@
 %{
+#include <stdio.h>
 int yylex(void);
 void yyerror (char const *s);
 %}
@@ -47,9 +48,31 @@ void yyerror (char const *s);
 %token TK_IDENTIFICADOR
 %token TOKEN_ERRO
 
-%%
-
-decl : TK_PR_INT TK_IDENTIFICADOR TK_LIT_INT;
+%start programa
 
 %%
+
+programa: decl { printf("Sucesso"); }
+ 	| func;
+
+decl: TK_PR_STATIC type list
+	| type list;
+
+estrutura: TK_IDENTIFICADOR'['TK_LIT_INT']' 
+	| TK_IDENTIFICADOR;
+	
+type: TK_PR_INT 
+	| TK_PR_FLOAT 
+	| TK_PR_CHAR 
+	| TK_PR_BOOL 
+	| TK_PR_STRING;
+
+list: estrutura list';' 
+	| ','estrutura';';
+
+func: TOKEN_ERRO;
+
+%%
+
+
 

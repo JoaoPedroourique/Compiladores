@@ -1,0 +1,3 @@
+Como fazer para validar os simbolos especiais que não tem token proprio? Tipo, como validar que teve uma virgula ali entre os identificadores ou que teve um ; no fim? Posso mudar o scanner e acrescentar token para , e ;? Como pegar caracteres especiais no geral, na verdade;
+Retorno com sucesso deve ser zero, portanto no fim de cada regra da gramatica que possuir um terminal, eu devo botar um {return 0}?
+Como integrar o parser com o scanner pro yylex?
