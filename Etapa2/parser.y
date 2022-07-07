@@ -3,7 +3,6 @@
 int yylex(void);
 void yyerror (char const *s);
 %}
-%start decl
 %token TK_PR_INT
 %token TK_PR_FLOAT
 %token TK_PR_BOOL
@@ -52,7 +51,9 @@ void yyerror (char const *s);
 
 %%
 
-programa: decl { printf("Sucesso"); }
+// 3.1 Variaveis Globais
+
+programa: decl { printf("Sucesso\n"); }
  	| func;
 
 decl: TK_PR_STATIC type list
@@ -67,10 +68,13 @@ type: TK_PR_INT
 	| TK_PR_BOOL 
 	| TK_PR_STRING;
 
-list: estrutura list';' 
-	| ','estrutura';';
+list: estrutura';' 
+	| estrutura',' list;
 
 func: TOKEN_ERRO;
+
+
+// 3.2 Definição de funções
 
 %%
 
