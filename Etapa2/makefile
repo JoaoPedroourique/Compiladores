@@ -1,7 +1,7 @@
 all: run_etapa2
  
 run_etapa2: main.o
-	bison -d parser.y
+	bison -d  parser.y
 	flex scanner.l
 	gcc -c lex.yy.c parser.tab.c
 	gcc -c main.c

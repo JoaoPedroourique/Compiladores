@@ -1,1 +1,3 @@
-int oi, oi2, oi[2];
+static int funct(const int var, float var2){
+    
+}

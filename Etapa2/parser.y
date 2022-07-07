@@ -54,7 +54,7 @@ void yyerror (char const *s);
 // 3.1 Variaveis Globais
 
 programa: decl { printf("Sucesso\n"); }
- 	| func;
+ 	| func { printf("Funcao\n"); };
 
 decl: TK_PR_STATIC type list
 	| type list;
@@ -71,10 +71,29 @@ type: TK_PR_INT
 list: estrutura';' 
 	| estrutura',' list;
 
-func: TOKEN_ERRO;
 
+// 3.2 e 3.3 Funcoes e blocos de comando
 
-// 3.2 Definição de funções
+func: TK_PR_STATIC func_aux
+    |  func_aux;
+
+func_aux: type TK_IDENTIFICADOR'('param_list')' command_block;
+
+param_list: %empty
+    | func_param
+    | func_param',' param_list;
+
+func_param: TK_PR_CONST type TK_IDENTIFICADOR
+    | type TK_IDENTIFICADOR;
+
+command_block: '{' command_list '}'
+
+command_list: %empty
+    | simple_command ';' command_list;
+
+// 3.4 Comandos simples
+
+simple_command: %empty
 
 %%
 
