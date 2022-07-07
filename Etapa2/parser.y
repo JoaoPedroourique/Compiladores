@@ -86,14 +86,81 @@ param_list: %empty
 func_param: TK_PR_CONST type TK_IDENTIFICADOR
     | type TK_IDENTIFICADOR;
 
-command_block: '{' command_list '}'
+command_block: '{'command_list'}';
 
 command_list: %empty
-    | simple_command ';' command_list;
+    | simple_command command_list;
 
 // 3.4 Comandos simples
 
-simple_command: %empty
+simple_command: decl_local';'
+	| attribuition';'
+	| input_op';'
+	| output_op';'
+	| func_call';'
+	| return_op';'
+	| break_op';'
+	| continue_op';'
+	| shift_op';';
+
+// Declaracao de variavel local
+
+decl_local: TK_PR_STATIC TK_PR_CONST type local_list
+	| TK_PR_CONST type local_list
+	| TK_PR_STATIC type local_list
+	| type local_list
+	| TK_PR_STATIC TK_PR_CONST type local_list TK_OC_LE value
+	| TK_PR_CONST type local_list TK_OC_LE value
+	| TK_PR_STATIC type local_list TK_OC_LE value
+	| type local_list TK_OC_LE value;
+	
+value: TK_IDENTIFICADOR
+	| literal;
+	
+literal: TK_LIT_INT 
+	| TK_LIT_FLOAT 
+	| TK_LIT_CHAR 
+	| TK_LIT_FALSE
+	| TK_LIT_TRUE 
+	| TK_LIT_STRING;
+
+local_list: TK_IDENTIFICADOR 
+	| TK_IDENTIFICADOR',' local_list;
+
+
+attribuition: estrutura '=' expression;
+
+input_op: TK_PR_INPUT TK_IDENTIFICADOR;
+
+output_op: TK_PR_OUTPUT TK_IDENTIFICADOR
+	| TK_PR_OUTPUT literal;
+
+return_op: TK_PR_RETURN expression;
+
+break_op: TK_PR_BREAK;
+
+continue_op: TK_PR_CONTINUE;
+
+func_call: TK_IDENTIFICADOR'('params')';
+
+params: param 
+	| param',' params;
+	
+param: %empty
+	| literal
+	| TK_IDENTIFICADOR
+	| expression;
+	
+shift_op: estrutura TK_OC_SL  TK_LIT_INT
+	| estrutura TK_OC_SR  TK_LIT_INT;
+	
+//control_flow:
+
+expression: arithmetic | logic;
+
+arithmetic: TK_PR_WHILE;
+
+logic: TK_PR_ELSE;
 
 %%
 

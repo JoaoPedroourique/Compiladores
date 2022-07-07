@@ -1,3 +1,17 @@
 static int funct(const int var, float var2){
-    
+    int variavel;
+    const int variavel;
+    static const int variavel, variavel2;
+    static const int variavel <= 1.0;
+    int variavel <= variavel;
+    return while;
+    oi = else;
+    oi[1] = else;
+    input entrada;
+    output 3;
+    funct(2);
+    variavel << 3;
+    break;
+    continue;
+
 }

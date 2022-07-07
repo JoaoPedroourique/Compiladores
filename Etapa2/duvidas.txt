@@ -1,1 +1,9 @@
-- Como não reconhecer int vetor[-2];?
+- Como não reconhecer int vetor[-2];? O mesmo vale para validar um inteiro positivo para o comando shift.
+
+É para reconhecr algo do tipo int variavel <= 2, variavel2 <= 3?
+
+Precisa validar o nome da função ou é basicamente só um identificador? Se precisa, como fazer?
+
+Revisar chamada de função, tava com sono.
+
+O que exatamente é uma expressão? Não pode ser um identificador?
