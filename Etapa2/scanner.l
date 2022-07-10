@@ -1,8 +1,9 @@
 %{
 #include "parser.tab.h"
 int cur_line = 1;
-void yyerror (char const *s) {
-fprintf (stderr, "%s\n", s);
+int yyerror (char const *s) {
+fprintf (stderr, "%s in line %d\n", s, cur_line);
+return yyparse();
 }
 %}
 
@@ -12,7 +13,7 @@ especiais [,;:\(\)\[\]\{\}+\-|*/<>=!&%#\^.$]
 linebreak [\r\n|\r|\n]
 identifier [a-zA-Z_][a-zA-Z0-9_]*
 digit [0-9]
-integer [+-]?{digit}+
+integer {digit}+
 exponent [eE][+-]?{integer}
 real {integer}("."{integer}){exponent}?
 character "'".{1}"'"

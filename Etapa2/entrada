@@ -1,7 +1,9 @@
+int variavel[2];
 static int funct(const int var, float var2){
     int variavel;
     const int variavel;
     static const int variavel, variavel2;
+    int variavel1 <= 2, variavel2 <= 3;
     static const int variavel <= 1.0;
     int variavel <= variavel;
     return while;

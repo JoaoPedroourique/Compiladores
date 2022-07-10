@@ -51,10 +51,11 @@ void yyerror (char const *s);
 
 %%
 
-// 3.1 Variaveis Globais
+programa: %empty
+	| decl programa { printf("Sucesso\n"); }
+ 	| func programa { printf("Funcao\n"); };
 
-programa: decl { printf("Sucesso\n"); }
- 	| func { printf("Funcao\n"); };
+// 3.1 Variaveis Globais
 
 decl: TK_PR_STATIC type list
 	| type list;
@@ -93,8 +94,8 @@ command_list: %empty
 
 // 3.4 Comandos simples
 
-simple_command: decl_local';'
-	| attribuition';'
+simple_command: local_decl';'
+	| attribution';'
 	| input_op';'
 	| output_op';'
 	| func_call';'
@@ -105,14 +106,10 @@ simple_command: decl_local';'
 
 // Declaracao de variavel local
 
-decl_local: TK_PR_STATIC TK_PR_CONST type local_list
+local_decl: TK_PR_STATIC TK_PR_CONST type local_list
 	| TK_PR_CONST type local_list
 	| TK_PR_STATIC type local_list
-	| type local_list
-	| TK_PR_STATIC TK_PR_CONST type local_list TK_OC_LE value
-	| TK_PR_CONST type local_list TK_OC_LE value
-	| TK_PR_STATIC type local_list TK_OC_LE value
-	| type local_list TK_OC_LE value;
+	| type local_list;
 	
 value: TK_IDENTIFICADOR
 	| literal;
@@ -124,22 +121,26 @@ literal: TK_LIT_INT
 	| TK_LIT_TRUE 
 	| TK_LIT_STRING;
 
-local_list: TK_IDENTIFICADOR 
-	| TK_IDENTIFICADOR',' local_list;
+local_list: local_decl_aux local_list_aux;
 
+local_list_aux: %empty 
+	| ',' local_decl_aux local_list_aux;
 
-attribuition: estrutura '=' expression;
+local_decl_aux: TK_IDENTIFICADOR
+	| TK_IDENTIFICADOR TK_OC_LE value
+
+// Comando de Atribuicao
+
+attribution: estrutura '=' expression;
+
+// Comandos de entrada e saida
 
 input_op: TK_PR_INPUT TK_IDENTIFICADOR;
 
 output_op: TK_PR_OUTPUT TK_IDENTIFICADOR
 	| TK_PR_OUTPUT literal;
 
-return_op: TK_PR_RETURN expression;
-
-break_op: TK_PR_BREAK;
-
-continue_op: TK_PR_CONTINUE;
+// Chamada de funcao
 
 func_call: TK_IDENTIFICADOR'('params')';
 
@@ -150,18 +151,35 @@ param: %empty
 	| literal
 	| TK_IDENTIFICADOR
 	| expression;
+
+// Comando de Retorno, Break, Continue
+
+return_op: TK_PR_RETURN expression;
+
+break_op: TK_PR_BREAK;
+
+continue_op: TK_PR_CONTINUE;
+
+// Comandos de shift
 	
 shift_op: estrutura TK_OC_SL  TK_LIT_INT
 	| estrutura TK_OC_SR  TK_LIT_INT;
 	
-//control_flow:
+// 3.5 Expr. aritmeticas, logicas
 
 expression: arithmetic | logic;
 
-arithmetic: TK_PR_WHILE;
+arithmetic: TK_IDENTIFICADOR;
 
-logic: TK_PR_ELSE;
+logic: TK_IDENTIFICADOR;
 
+// Comandos de controle de fluxo
+
+cond_flow: TK_PR_IF '(' expression')' command_block
+	| TK_PR_IF '(' expression')' command_block TK_PR_ELSE command_block
+
+iter_flow: TK_PR_FOR '(' attribution ':' expression ':' attribution')' command_block
+	| TK_PR_WHILE '(' expression')' TK_PR_DO command_block
 %%
 
 
