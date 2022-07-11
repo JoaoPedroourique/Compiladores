@@ -116,12 +116,18 @@ local_decl: TK_PR_STATIC TK_PR_CONST type local_list
 value: TK_IDENTIFICADOR
 	| literal;
 	
-literal: TK_LIT_INT 
-	| TK_LIT_FLOAT 
-	| TK_LIT_CHAR 
-	| TK_LIT_FALSE
-	| TK_LIT_TRUE 
+literal: literal_numeric
+	| literal_alphabetic
+	| literal_boolean;
+	
+literal_numeric: TK_LIT_INT 
+	| TK_LIT_FLOAT; 
+	
+literal_alphabetic: TK_LIT_CHAR
 	| TK_LIT_STRING;
+
+literal_boolean: TK_LIT_FALSE
+	| TK_LIT_TRUE;
 
 local_list: local_decl_aux local_list_aux;
 
@@ -171,10 +177,17 @@ shift_op: estrutura TK_OC_SL  TK_LIT_INT
 
 expression: arithmetic | logic;
 
-arithmetic: TK_IDENTIFICADOR'['TK_LIT_INT']'
-	| TK_IDENTIFICADOR;
+arithmetic: arithmetic_operand
+	| arithmetic_operand arithmetic_operator arithmetic;
 
-logic: TK_IDENTIFICADOR;
+arithmetic_operand: TK_IDENTIFICADOR'['TK_LIT_INT']'
+	| TK_IDENTIFICADOR
+	| literal_numeric
+	| func_call;
+	
+arithmetic_operator: 
+
+logic: ;
 
 // Comandos de controle de fluxo
 
