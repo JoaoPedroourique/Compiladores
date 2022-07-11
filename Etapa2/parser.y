@@ -185,9 +185,24 @@ arithmetic_operand: TK_IDENTIFICADOR'['TK_LIT_INT']'
 	| literal_numeric
 	| func_call;
 	
-arithmetic_operator: 
+relational_op: TK_OC_LE
+	| TK_OC_EQ
+	| TK_OC_GE
+	| TK_OC_NE
+	| '>'
+	| '<';
 
-logic: ;
+unary_op: list all
+
+binary_op: list all
+
+logic: provavelmente precisa usar um aux q aceite vazio, pra evitar de aceitar uma expressao logica vazia e a recursão dar certo
+	| arithmetic relational_op arithmetic
+	| unary_op arithmetic_operand logic
+	| arithmetic_operand binary_op arithmetic_operand logic
+	| TODO ternary;
+
+
 
 // Comandos de controle de fluxo
 
