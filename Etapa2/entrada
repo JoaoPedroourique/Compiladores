@@ -6,7 +6,7 @@ static int funct(const int var, float var2){
     int variavel1 <= 2, variavel2 <= 3;
     static const int variavel <= 1.0;
     int variavel <= variavel;
-    return while;
+    return variavel;
     oi = else;
     oi[1] = else;
     input entrada;

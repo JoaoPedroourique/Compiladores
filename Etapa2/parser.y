@@ -46,6 +46,8 @@ void yyerror (char const *s);
 %token TK_LIT_STRING
 %token TK_IDENTIFICADOR
 %token TOKEN_ERRO
+%define parse.lac full
+%define parse.error detailed
 
 %start programa
 
@@ -169,7 +171,8 @@ shift_op: estrutura TK_OC_SL  TK_LIT_INT
 
 expression: arithmetic | logic;
 
-arithmetic: TK_IDENTIFICADOR;
+arithmetic: TK_IDENTIFICADOR'['TK_LIT_INT']'
+	| TK_IDENTIFICADOR;
 
 logic: TK_IDENTIFICADOR;
 
