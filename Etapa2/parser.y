@@ -48,6 +48,9 @@ void yyerror (char const *s);
 %token TOKEN_ERRO
 %define parse.lac full
 %define parse.error detailed
+%right '&'
+%right '#'
+%right '*'
 
 %start programa
 
@@ -158,7 +161,8 @@ params: param
 	| param',' params;
 	
 param: %empty
-	| literal
+	| literal_alphabetic
+	| literal_boolean
 	| expression;
 
 // Comando de Retorno, Break, Continue
@@ -180,10 +184,11 @@ expression: arithmetic
 	| logic
 	| ternary;
 
-arithmetic: arithmetic_operand
+arithmetic: arithmetic_operand {printf("bunda");}
 	| un_arithmetic_operator arithmetic_operand
 	| un_arithmetic_operator arithmetic_operand bin_arithmetic_operator arithmetic
-	| arithmetic_operand bin_arithmetic_operator arithmetic;
+	| arithmetic_operand bin_arithmetic_operator arithmetic
+	| '(' arithmetic ')' {printf("cu");};
 
 arithmetic_operand: estrutura
 	| literal_numeric
@@ -217,14 +222,13 @@ relational_op: TK_OC_LE
 	| '>'
 	| '<';
 
-ternary: logic '?' arithmetic ':' arithmetic
-	| logic '?' logic ':' logic;
-
+ternary: arithmetic '?' arithmetic ':' arithmetic
+	| logic '?' arithmetic ':' arithmetic
+	| logic '?' logic ':' arithmetic;
 
 logic: arithmetic relational_op arithmetic
 	| un_logic_operator arithmetic_operand logic
 	| arithmetic_operand bin_logic_operator arithmetic_operand logic;
-
 
 // Comandos de controle de fluxo
 
@@ -232,7 +236,7 @@ cond_flow: TK_PR_IF '(' expression')' command_block
 	| TK_PR_IF '(' expression')' command_block TK_PR_ELSE command_block;
 
 iter_flow: TK_PR_FOR '(' attribution ':' expression ':' attribution')' command_block
-	| TK_PR_WHILE '(' expression')' TK_PR_DO command_block
+	| TK_PR_WHILE '(' expression')' TK_PR_DO command_block;
 %%
 
 
