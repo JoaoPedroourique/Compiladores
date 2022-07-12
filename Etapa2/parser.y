@@ -51,14 +51,14 @@ void yyerror (char const *s);
 %right '&'
 %right '#'
 %right '*'
-
+%precedence "("
 %start programa
 
 %%
 
 programa: %empty
-	| decl programa { printf("Sucesso\n"); }
- 	| func programa { printf("Funcao\n"); };
+	| decl programa
+ 	| func programa;
 
 // 3.1 Variaveis Globais
 
@@ -184,11 +184,11 @@ expression: arithmetic
 	| logic
 	| ternary;
 
-arithmetic: arithmetic_operand {printf("bunda");}
+arithmetic: arithmetic_operand
 	| un_arithmetic_operator arithmetic_operand
 	| un_arithmetic_operator arithmetic_operand bin_arithmetic_operator arithmetic
 	| arithmetic_operand bin_arithmetic_operator arithmetic
-	| '(' arithmetic ')' {printf("cu");};
+	| '(' arithmetic ')';
 
 arithmetic_operand: estrutura
 	| literal_numeric
@@ -222,9 +222,8 @@ relational_op: TK_OC_LE
 	| '>'
 	| '<';
 
-ternary: arithmetic '?' arithmetic ':' arithmetic
-	| logic '?' arithmetic ':' arithmetic
-	| logic '?' logic ':' arithmetic;
+ternary: logic '?' arithmetic ':' arithmetic
+	| logic '?' logic ':' logic;
 
 logic: arithmetic relational_op arithmetic
 	| un_logic_operator arithmetic_operand logic

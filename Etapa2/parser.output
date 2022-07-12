@@ -13,16 +13,10 @@ Terminals unused in grammar
     TK_OC_AND
     TK_OC_OR
     TOKEN_ERRO
+    "("
 
 
-Rules useless in parser due to conflicts
-
-   66 param: TK_IDENTIFICADOR
-
-
-State 149 conflicts: 2 reduce/reduce
-State 151 conflicts: 2 reduce/reduce
-State 191 conflicts: 1 shift/reduce
+State 51 conflicts: 1 shift/reduce
 
 
 Grammar
@@ -119,8 +113,8 @@ Grammar
    63       | param ',' params
 
    64 param: ε
-   65      | literal
-   66      | TK_IDENTIFICADOR
+   65      | literal_alphabetic
+   66      | literal_boolean
    67      | expression
 
    68 return_op: TK_PR_RETURN expression
@@ -140,77 +134,79 @@ Grammar
    77           | un_arithmetic_operator arithmetic_operand
    78           | un_arithmetic_operator arithmetic_operand bin_arithmetic_operator arithmetic
    79           | arithmetic_operand bin_arithmetic_operator arithmetic
+   80           | '(' arithmetic ')'
 
-   80 arithmetic_operand: estrutura
-   81                   | literal_numeric
-   82                   | func_call
+   81 arithmetic_operand: estrutura
+   82                   | literal_numeric
+   83                   | func_call
 
-   83 bin_arithmetic_operator: '+'
-   84                        | '-'
-   85                        | '*'
-   86                        | '/'
-   87                        | '%'
-   88                        | '^'
+   84 bin_arithmetic_operator: '+'
+   85                        | '-'
+   86                        | '*'
+   87                        | '/'
+   88                        | '%'
+   89                        | '^'
 
-   89 un_arithmetic_operator: '+'
-   90                       | '-'
-   91                       | '&'
-   92                       | '*'
-   93                       | '#'
+   90 un_arithmetic_operator: '+'
+   91                       | '-'
+   92                       | '&'
+   93                       | '*'
+   94                       | '#'
 
-   94 un_logic_operator: '!'
-   95                  | '?'
+   95 un_logic_operator: '!'
+   96                  | '?'
 
-   96 bin_logic_operator: '|'
-   97                   | '&'
-   98                   | '|' '|'
-   99                   | '&' '&'
+   97 bin_logic_operator: '|'
+   98                   | '&'
+   99                   | '|' '|'
+  100                   | '&' '&'
 
-  100 relational_op: TK_OC_LE
-  101              | TK_OC_EQ
-  102              | TK_OC_GE
-  103              | TK_OC_NE
-  104              | '>'
-  105              | '<'
+  101 relational_op: TK_OC_LE
+  102              | TK_OC_EQ
+  103              | TK_OC_GE
+  104              | TK_OC_NE
+  105              | '>'
+  106              | '<'
 
-  106 ternary: expression '?' expression ':' expression
+  107 ternary: logic '?' arithmetic ':' arithmetic
+  108        | logic '?' logic ':' logic
 
-  107 logic: arithmetic relational_op arithmetic
-  108      | un_logic_operator arithmetic_operand logic
-  109      | arithmetic_operand bin_logic_operator arithmetic_operand logic
+  109 logic: arithmetic relational_op arithmetic
+  110      | un_logic_operator arithmetic_operand logic
+  111      | arithmetic_operand bin_logic_operator arithmetic_operand logic
 
-  110 cond_flow: TK_PR_IF '(' expression ')' command_block
-  111          | TK_PR_IF '(' expression ')' command_block TK_PR_ELSE command_block
+  112 cond_flow: TK_PR_IF '(' expression ')' command_block
+  113          | TK_PR_IF '(' expression ')' command_block TK_PR_ELSE command_block
 
-  112 iter_flow: TK_PR_FOR '(' attribution ':' expression ':' attribution ')' command_block
-  113          | TK_PR_WHILE '(' expression ')' TK_PR_DO command_block
+  114 iter_flow: TK_PR_FOR '(' attribution ':' expression ':' attribution ')' command_block
+  115          | TK_PR_WHILE '(' expression ')' TK_PR_DO command_block
 
 
 Terminals, with rules where they appear
 
     $end (0) 0
-    '!' (33) 94
-    '#' (35) 93
-    '%' (37) 87
-    '&' (38) 91 97 99
-    '(' (40) 17 61 110 111 112 113
-    ')' (41) 17 61 110 111 112 113
-    '*' (42) 85 92
-    '+' (43) 83 89
+    '!' (33) 95
+    '#' (35) 94
+    '%' (37) 88
+    '&' (38) 92 98 100
+    '(' (40) 17 61 80 112 113 114 115
+    ')' (41) 17 61 80 112 113 114 115
+    '*' (42) 86 93
+    '+' (43) 84 90
     ',' (44) 14 20 54 63
-    '-' (45) 84 90
-    '/' (47) 86
-    ':' (58) 106 112
+    '-' (45) 85 91
+    '/' (47) 87
+    ':' (58) 107 108 114
     ';' (59) 13 26 27 28 29 30 31 32 33 34 35 36
-    '<' (60) 105
+    '<' (60) 106
     '=' (61) 57
-    '>' (62) 104
-    '?' (63) 95 106
+    '>' (62) 105
+    '?' (63) 96 107 108
     '[' (91) 6
     ']' (93) 6
-    '^' (94) 88
+    '^' (94) 89
     '{' (123) 23
-    '|' (124) 96 98
+    '|' (124) 97 99
     '}' (125) 23
     error (256)
     TK_PR_INT (258) 8
@@ -218,18 +214,18 @@ Terminals, with rules where they appear
     TK_PR_BOOL (260) 11
     TK_PR_CHAR (261) 10
     TK_PR_STRING (262) 12
-    TK_PR_IF (263) 110 111
+    TK_PR_IF (263) 112 113
     TK_PR_THEN (264)
-    TK_PR_ELSE (265) 111
-    TK_PR_WHILE (266) 113
-    TK_PR_DO (267) 113
+    TK_PR_ELSE (265) 113
+    TK_PR_WHILE (266) 115
+    TK_PR_DO (267) 115
     TK_PR_INPUT (268) 58
     TK_PR_OUTPUT (269) 59 60
     TK_PR_RETURN (270) 68
     TK_PR_CONST (271) 21 37 38
     TK_PR_STATIC (272) 4 15 37 39
     TK_PR_FOREACH (273)
-    TK_PR_FOR (274) 112
+    TK_PR_FOR (274) 114
     TK_PR_SWITCH (275)
     TK_PR_CASE (276)
     TK_PR_BREAK (277) 69
@@ -240,10 +236,10 @@ Terminals, with rules where they appear
     TK_PR_PROTECTED (282)
     TK_PR_END (283)
     TK_PR_DEFAULT (284)
-    TK_OC_LE (285) 56 100
-    TK_OC_GE (286) 102
-    TK_OC_EQ (287) 101
-    TK_OC_NE (288) 103
+    TK_OC_LE (285) 56 101
+    TK_OC_GE (286) 103
+    TK_OC_EQ (287) 102
+    TK_OC_NE (288) 104
     TK_OC_AND (289)
     TK_OC_OR (290)
     TK_OC_SL (291) 71
@@ -254,142 +250,143 @@ Terminals, with rules where they appear
     TK_LIT_TRUE (296) 51
     TK_LIT_CHAR (297) 48
     TK_LIT_STRING (298) 49
-    TK_IDENTIFICADOR (299) 6 7 17 21 22 41 55 56 58 59 61 66
+    TK_IDENTIFICADOR (299) 6 7 17 21 22 41 55 56 58 59 61
     TOKEN_ERRO (300)
+    "(" (301)
 
 
 Nonterminals, with rules where they appear
 
-    $accept (69)
+    $accept (70)
         on left: 0
-    programa (70)
+    programa (71)
         on left: 1 2 3
         on right: 0 2 3
-    decl (71)
+    decl (72)
         on left: 4 5
         on right: 2
-    estrutura (72)
+    estrutura (73)
         on left: 6 7
-        on right: 13 14 57 71 72 80
-    type (73)
+        on right: 13 14 57 71 72 81
+    type (74)
         on left: 8 9 10 11 12
         on right: 4 5 17 21 22 37 38 39 40
-    list (74)
+    list (75)
         on left: 13 14
         on right: 4 5 14
-    func (75)
+    func (76)
         on left: 15 16
         on right: 3
-    func_aux (76)
+    func_aux (77)
         on left: 17
         on right: 15 16
-    param_list (77)
+    param_list (78)
         on left: 18 19 20
         on right: 17 20
-    func_param (78)
+    func_param (79)
         on left: 21 22
         on right: 19 20
-    command_block (79)
+    command_block (80)
         on left: 23
-        on right: 17 110 111 112 113
-    command_list (80)
+        on right: 17 112 113 114 115
+    command_list (81)
         on left: 24 25
         on right: 23 25
-    simple_command (81)
+    simple_command (82)
         on left: 26 27 28 29 30 31 32 33 34 35 36
         on right: 25
-    local_decl (82)
+    local_decl (83)
         on left: 37 38 39 40
         on right: 26
-    value (83)
+    value (84)
         on left: 41 42
         on right: 56
-    literal (84)
+    literal (85)
         on left: 43 44 45
-        on right: 42 60 65
-    literal_numeric (85)
+        on right: 42 60
+    literal_numeric (86)
         on left: 46 47
-        on right: 43 81
-    literal_alphabetic (86)
+        on right: 43 82
+    literal_alphabetic (87)
         on left: 48 49
-        on right: 44
-    literal_boolean (87)
+        on right: 44 65
+    literal_boolean (88)
         on left: 50 51
-        on right: 45
-    local_list (88)
+        on right: 45 66
+    local_list (89)
         on left: 52
         on right: 37 38 39 40
-    local_list_aux (89)
+    local_list_aux (90)
         on left: 53 54
         on right: 52 54
-    local_decl_aux (90)
+    local_decl_aux (91)
         on left: 55 56
         on right: 52 54
-    attribution (91)
+    attribution (92)
         on left: 57
-        on right: 27 112
-    input_op (92)
+        on right: 27 114
+    input_op (93)
         on left: 58
         on right: 28
-    output_op (93)
+    output_op (94)
         on left: 59 60
         on right: 29
-    func_call (94)
+    func_call (95)
         on left: 61
-        on right: 30 82
-    params (95)
+        on right: 30 83
+    params (96)
         on left: 62 63
         on right: 61 63
-    param (96)
+    param (97)
         on left: 64 65 66 67
         on right: 62 63
-    return_op (97)
+    return_op (98)
         on left: 68
         on right: 31
-    break_op (98)
+    break_op (99)
         on left: 69
         on right: 32
-    continue_op (99)
+    continue_op (100)
         on left: 70
         on right: 33
-    shift_op (100)
+    shift_op (101)
         on left: 71 72
         on right: 34
-    expression (101)
+    expression (102)
         on left: 73 74 75
-        on right: 57 67 68 106 110 111 112 113
-    arithmetic (102)
-        on left: 76 77 78 79
-        on right: 73 78 79 107
-    arithmetic_operand (103)
-        on left: 80 81 82
-        on right: 76 77 78 79 108 109
-    bin_arithmetic_operator (104)
-        on left: 83 84 85 86 87 88
+        on right: 57 67 68 112 113 114 115
+    arithmetic (103)
+        on left: 76 77 78 79 80
+        on right: 73 78 79 80 107 109
+    arithmetic_operand (104)
+        on left: 81 82 83
+        on right: 76 77 78 79 110 111
+    bin_arithmetic_operator (105)
+        on left: 84 85 86 87 88 89
         on right: 78 79
-    un_arithmetic_operator (105)
-        on left: 89 90 91 92 93
+    un_arithmetic_operator (106)
+        on left: 90 91 92 93 94
         on right: 77 78
-    un_logic_operator (106)
-        on left: 94 95
-        on right: 108
-    bin_logic_operator (107)
-        on left: 96 97 98 99
+    un_logic_operator (107)
+        on left: 95 96
+        on right: 110
+    bin_logic_operator (108)
+        on left: 97 98 99 100
+        on right: 111
+    relational_op (109)
+        on left: 101 102 103 104 105 106
         on right: 109
-    relational_op (108)
-        on left: 100 101 102 103 104 105
-        on right: 107
-    ternary (109)
-        on left: 106
+    ternary (110)
+        on left: 107 108
         on right: 75
-    logic (110)
-        on left: 107 108 109
-        on right: 74 108 109
-    cond_flow (111)
-        on left: 110 111
-        on right: 35
-    iter_flow (112)
+    logic (111)
+        on left: 109 110 111
+        on right: 74 107 108 110 111
+    cond_flow (112)
         on left: 112 113
+        on right: 35
+    iter_flow (113)
+        on left: 114 115
         on right: 36
 
 
@@ -816,15 +813,15 @@ State 40
 
 State 41
 
-  110 cond_flow: TK_PR_IF • '(' expression ')' command_block
-  111          | TK_PR_IF • '(' expression ')' command_block TK_PR_ELSE command_block
+  112 cond_flow: TK_PR_IF • '(' expression ')' command_block
+  113          | TK_PR_IF • '(' expression ')' command_block TK_PR_ELSE command_block
 
     '('  shift, and go to state 67
 
 
 State 42
 
-  113 iter_flow: TK_PR_WHILE • '(' expression ')' TK_PR_DO command_block
+  115 iter_flow: TK_PR_WHILE • '(' expression ')' TK_PR_DO command_block
 
     '('  shift, and go to state 68
 
@@ -862,24 +859,25 @@ State 45
     TK_LIT_INT        shift, and go to state 70
     TK_LIT_FLOAT      shift, and go to state 71
     TK_IDENTIFICADOR  shift, and go to state 51
-    '+'               shift, and go to state 81
-    '-'               shift, and go to state 82
+    '&'               shift, and go to state 81
+    '#'               shift, and go to state 82
     '*'               shift, and go to state 83
-    '&'               shift, and go to state 84
-    '#'               shift, and go to state 85
-    '!'               shift, and go to state 86
-    '?'               shift, and go to state 87
+    '('               shift, and go to state 84
+    '+'               shift, and go to state 85
+    '-'               shift, and go to state 86
+    '!'               shift, and go to state 87
+    '?'               shift, and go to state 88
 
-    estrutura               go to state 88
-    literal_numeric         go to state 89
-    func_call               go to state 90
-    expression              go to state 91
-    arithmetic              go to state 92
-    arithmetic_operand      go to state 93
-    un_arithmetic_operator  go to state 94
-    un_logic_operator       go to state 95
-    ternary                 go to state 96
-    logic                   go to state 97
+    estrutura               go to state 89
+    literal_numeric         go to state 90
+    func_call               go to state 91
+    expression              go to state 92
+    arithmetic              go to state 93
+    arithmetic_operand      go to state 94
+    un_arithmetic_operator  go to state 95
+    un_logic_operator       go to state 96
+    ternary                 go to state 97
+    logic                   go to state 98
 
 
 State 46
@@ -892,7 +890,7 @@ State 46
     TK_PR_CHAR    shift, and go to state 4
     TK_PR_STRING  shift, and go to state 5
 
-    type  go to state 98
+    type  go to state 99
 
 
 State 47
@@ -905,16 +903,16 @@ State 47
     TK_PR_BOOL    shift, and go to state 3
     TK_PR_CHAR    shift, and go to state 4
     TK_PR_STRING  shift, and go to state 5
-    TK_PR_CONST   shift, and go to state 99
+    TK_PR_CONST   shift, and go to state 100
 
-    type  go to state 100
+    type  go to state 101
 
 
 State 48
 
-  112 iter_flow: TK_PR_FOR • '(' attribution ':' expression ':' attribution ')' command_block
+  114 iter_flow: TK_PR_FOR • '(' attribution ':' expression ':' attribution ')' command_block
 
-    '('  shift, and go to state 101
+    '('  shift, and go to state 102
 
 
 State 49
@@ -938,8 +936,9 @@ State 51
    61 func_call: TK_IDENTIFICADOR • '(' params ')'
 
     '['  shift, and go to state 21
-    '('  shift, and go to state 102
+    '('  shift, and go to state 103
 
+    '('       [reduce using rule 7 (estrutura)]
     $default  reduce using rule 7 (estrutura)
 
 
@@ -949,26 +948,26 @@ State 52
    71 shift_op: estrutura • TK_OC_SL TK_LIT_INT
    72         | estrutura • TK_OC_SR TK_LIT_INT
 
-    TK_OC_SL  shift, and go to state 103
-    TK_OC_SR  shift, and go to state 104
-    '='       shift, and go to state 105
+    TK_OC_SL  shift, and go to state 104
+    TK_OC_SR  shift, and go to state 105
+    '='       shift, and go to state 106
 
 
 State 53
 
    40 local_decl: type • local_list
 
-    TK_IDENTIFICADOR  shift, and go to state 106
+    TK_IDENTIFICADOR  shift, and go to state 107
 
-    local_list      go to state 107
-    local_decl_aux  go to state 108
+    local_list      go to state 108
+    local_decl_aux  go to state 109
 
 
 State 54
 
    23 command_block: '{' command_list • '}'
 
-    '}'  shift, and go to state 109
+    '}'  shift, and go to state 110
 
 
 State 55
@@ -996,7 +995,7 @@ State 55
 
     estrutura       go to state 52
     type            go to state 53
-    command_list    go to state 110
+    command_list    go to state 111
     simple_command  go to state 55
     local_decl      go to state 56
     attribution     go to state 57
@@ -1015,132 +1014,134 @@ State 56
 
    26 simple_command: local_decl • ';'
 
-    ';'  shift, and go to state 111
+    ';'  shift, and go to state 112
 
 
 State 57
 
    27 simple_command: attribution • ';'
 
-    ';'  shift, and go to state 112
+    ';'  shift, and go to state 113
 
 
 State 58
 
    28 simple_command: input_op • ';'
 
-    ';'  shift, and go to state 113
+    ';'  shift, and go to state 114
 
 
 State 59
 
    29 simple_command: output_op • ';'
 
-    ';'  shift, and go to state 114
+    ';'  shift, and go to state 115
 
 
 State 60
 
    30 simple_command: func_call • ';'
 
-    ';'  shift, and go to state 115
+    ';'  shift, and go to state 116
 
 
 State 61
 
    31 simple_command: return_op • ';'
 
-    ';'  shift, and go to state 116
+    ';'  shift, and go to state 117
 
 
 State 62
 
    32 simple_command: break_op • ';'
 
-    ';'  shift, and go to state 117
+    ';'  shift, and go to state 118
 
 
 State 63
 
    33 simple_command: continue_op • ';'
 
-    ';'  shift, and go to state 118
+    ';'  shift, and go to state 119
 
 
 State 64
 
    34 simple_command: shift_op • ';'
 
-    ';'  shift, and go to state 119
+    ';'  shift, and go to state 120
 
 
 State 65
 
    35 simple_command: cond_flow • ';'
 
-    ';'  shift, and go to state 120
+    ';'  shift, and go to state 121
 
 
 State 66
 
    36 simple_command: iter_flow • ';'
 
-    ';'  shift, and go to state 121
+    ';'  shift, and go to state 122
 
 
 State 67
 
-  110 cond_flow: TK_PR_IF '(' • expression ')' command_block
-  111          | TK_PR_IF '(' • expression ')' command_block TK_PR_ELSE command_block
+  112 cond_flow: TK_PR_IF '(' • expression ')' command_block
+  113          | TK_PR_IF '(' • expression ')' command_block TK_PR_ELSE command_block
 
     TK_LIT_INT        shift, and go to state 70
     TK_LIT_FLOAT      shift, and go to state 71
     TK_IDENTIFICADOR  shift, and go to state 51
-    '+'               shift, and go to state 81
-    '-'               shift, and go to state 82
+    '&'               shift, and go to state 81
+    '#'               shift, and go to state 82
     '*'               shift, and go to state 83
-    '&'               shift, and go to state 84
-    '#'               shift, and go to state 85
-    '!'               shift, and go to state 86
-    '?'               shift, and go to state 87
+    '('               shift, and go to state 84
+    '+'               shift, and go to state 85
+    '-'               shift, and go to state 86
+    '!'               shift, and go to state 87
+    '?'               shift, and go to state 88
 
-    estrutura               go to state 88
-    literal_numeric         go to state 89
-    func_call               go to state 90
-    expression              go to state 122
-    arithmetic              go to state 92
-    arithmetic_operand      go to state 93
-    un_arithmetic_operator  go to state 94
-    un_logic_operator       go to state 95
-    ternary                 go to state 96
-    logic                   go to state 97
+    estrutura               go to state 89
+    literal_numeric         go to state 90
+    func_call               go to state 91
+    expression              go to state 123
+    arithmetic              go to state 93
+    arithmetic_operand      go to state 94
+    un_arithmetic_operator  go to state 95
+    un_logic_operator       go to state 96
+    ternary                 go to state 97
+    logic                   go to state 98
 
 
 State 68
 
-  113 iter_flow: TK_PR_WHILE '(' • expression ')' TK_PR_DO command_block
+  115 iter_flow: TK_PR_WHILE '(' • expression ')' TK_PR_DO command_block
 
     TK_LIT_INT        shift, and go to state 70
     TK_LIT_FLOAT      shift, and go to state 71
     TK_IDENTIFICADOR  shift, and go to state 51
-    '+'               shift, and go to state 81
-    '-'               shift, and go to state 82
+    '&'               shift, and go to state 81
+    '#'               shift, and go to state 82
     '*'               shift, and go to state 83
-    '&'               shift, and go to state 84
-    '#'               shift, and go to state 85
-    '!'               shift, and go to state 86
-    '?'               shift, and go to state 87
+    '('               shift, and go to state 84
+    '+'               shift, and go to state 85
+    '-'               shift, and go to state 86
+    '!'               shift, and go to state 87
+    '?'               shift, and go to state 88
 
-    estrutura               go to state 88
-    literal_numeric         go to state 89
-    func_call               go to state 90
-    expression              go to state 123
-    arithmetic              go to state 92
-    arithmetic_operand      go to state 93
-    un_arithmetic_operator  go to state 94
-    un_logic_operator       go to state 95
-    ternary                 go to state 96
-    logic                   go to state 97
+    estrutura               go to state 89
+    literal_numeric         go to state 90
+    func_call               go to state 91
+    expression              go to state 124
+    arithmetic              go to state 93
+    arithmetic_operand      go to state 94
+    un_arithmetic_operator  go to state 95
+    un_logic_operator       go to state 96
+    ternary                 go to state 97
+    logic                   go to state 98
 
 
 State 69
@@ -1229,123 +1230,142 @@ State 80
 
 State 81
 
-   89 un_arithmetic_operator: '+' •
-
-    $default  reduce using rule 89 (un_arithmetic_operator)
-
-
-State 82
-
-   90 un_arithmetic_operator: '-' •
-
-    $default  reduce using rule 90 (un_arithmetic_operator)
-
-
-State 83
-
-   92 un_arithmetic_operator: '*' •
+   92 un_arithmetic_operator: '&' •
 
     $default  reduce using rule 92 (un_arithmetic_operator)
 
 
-State 84
+State 82
 
-   91 un_arithmetic_operator: '&' •
+   94 un_arithmetic_operator: '#' •
 
-    $default  reduce using rule 91 (un_arithmetic_operator)
+    $default  reduce using rule 94 (un_arithmetic_operator)
 
 
-State 85
+State 83
 
-   93 un_arithmetic_operator: '#' •
+   93 un_arithmetic_operator: '*' •
 
     $default  reduce using rule 93 (un_arithmetic_operator)
 
 
+State 84
+
+   80 arithmetic: '(' • arithmetic ')'
+
+    TK_LIT_INT        shift, and go to state 70
+    TK_LIT_FLOAT      shift, and go to state 71
+    TK_IDENTIFICADOR  shift, and go to state 51
+    '&'               shift, and go to state 81
+    '#'               shift, and go to state 82
+    '*'               shift, and go to state 83
+    '('               shift, and go to state 84
+    '+'               shift, and go to state 85
+    '-'               shift, and go to state 86
+
+    estrutura               go to state 89
+    literal_numeric         go to state 90
+    func_call               go to state 91
+    arithmetic              go to state 125
+    arithmetic_operand      go to state 126
+    un_arithmetic_operator  go to state 95
+
+
+State 85
+
+   90 un_arithmetic_operator: '+' •
+
+    $default  reduce using rule 90 (un_arithmetic_operator)
+
+
 State 86
 
-   94 un_logic_operator: '!' •
+   91 un_arithmetic_operator: '-' •
 
-    $default  reduce using rule 94 (un_logic_operator)
+    $default  reduce using rule 91 (un_arithmetic_operator)
 
 
 State 87
 
-   95 un_logic_operator: '?' •
+   95 un_logic_operator: '!' •
 
     $default  reduce using rule 95 (un_logic_operator)
 
 
 State 88
 
-   80 arithmetic_operand: estrutura •
+   96 un_logic_operator: '?' •
 
-    $default  reduce using rule 80 (arithmetic_operand)
+    $default  reduce using rule 96 (un_logic_operator)
 
 
 State 89
 
-   81 arithmetic_operand: literal_numeric •
+   81 arithmetic_operand: estrutura •
 
     $default  reduce using rule 81 (arithmetic_operand)
 
 
 State 90
 
-   82 arithmetic_operand: func_call •
+   82 arithmetic_operand: literal_numeric •
 
     $default  reduce using rule 82 (arithmetic_operand)
 
 
 State 91
 
-   68 return_op: TK_PR_RETURN expression •
-  106 ternary: expression • '?' expression ':' expression
+   83 arithmetic_operand: func_call •
 
-    '?'  shift, and go to state 124
-
-    $default  reduce using rule 68 (return_op)
+    $default  reduce using rule 83 (arithmetic_operand)
 
 
 State 92
 
-   73 expression: arithmetic •
-  107 logic: arithmetic • relational_op arithmetic
+   68 return_op: TK_PR_RETURN expression •
 
-    TK_OC_LE  shift, and go to state 125
-    TK_OC_GE  shift, and go to state 126
-    TK_OC_EQ  shift, and go to state 127
-    TK_OC_NE  shift, and go to state 128
-    '>'       shift, and go to state 129
-    '<'       shift, and go to state 130
-
-    $default  reduce using rule 73 (expression)
-
-    relational_op  go to state 131
+    $default  reduce using rule 68 (return_op)
 
 
 State 93
 
-   76 arithmetic: arithmetic_operand •
-   79           | arithmetic_operand • bin_arithmetic_operator arithmetic
-  109 logic: arithmetic_operand • bin_logic_operator arithmetic_operand logic
+   73 expression: arithmetic •
+  109 logic: arithmetic • relational_op arithmetic
 
-    '+'  shift, and go to state 132
-    '-'  shift, and go to state 133
-    '*'  shift, and go to state 134
-    '/'  shift, and go to state 135
-    '%'  shift, and go to state 136
-    '^'  shift, and go to state 137
-    '&'  shift, and go to state 138
-    '|'  shift, and go to state 139
+    TK_OC_LE  shift, and go to state 127
+    TK_OC_GE  shift, and go to state 128
+    TK_OC_EQ  shift, and go to state 129
+    TK_OC_NE  shift, and go to state 130
+    '>'       shift, and go to state 131
+    '<'       shift, and go to state 132
 
-    $default  reduce using rule 76 (arithmetic)
+    $default  reduce using rule 73 (expression)
 
-    bin_arithmetic_operator  go to state 140
-    bin_logic_operator       go to state 141
+    relational_op  go to state 133
 
 
 State 94
+
+   76 arithmetic: arithmetic_operand •
+   79           | arithmetic_operand • bin_arithmetic_operator arithmetic
+  111 logic: arithmetic_operand • bin_logic_operator arithmetic_operand logic
+
+    '&'  shift, and go to state 134
+    '*'  shift, and go to state 135
+    '+'  shift, and go to state 136
+    '-'  shift, and go to state 137
+    '/'  shift, and go to state 138
+    '%'  shift, and go to state 139
+    '^'  shift, and go to state 140
+    '|'  shift, and go to state 141
+
+    $default  reduce using rule 76 (arithmetic)
+
+    bin_arithmetic_operator  go to state 142
+    bin_logic_operator       go to state 143
+
+
+State 95
 
    77 arithmetic: un_arithmetic_operator • arithmetic_operand
    78           | un_arithmetic_operator • arithmetic_operand bin_arithmetic_operator arithmetic
@@ -1354,51 +1374,55 @@ State 94
     TK_LIT_FLOAT      shift, and go to state 71
     TK_IDENTIFICADOR  shift, and go to state 51
 
-    estrutura           go to state 88
-    literal_numeric     go to state 89
-    func_call           go to state 90
-    arithmetic_operand  go to state 142
+    estrutura           go to state 89
+    literal_numeric     go to state 90
+    func_call           go to state 91
+    arithmetic_operand  go to state 144
 
 
-State 95
+State 96
 
-  108 logic: un_logic_operator • arithmetic_operand logic
+  110 logic: un_logic_operator • arithmetic_operand logic
 
     TK_LIT_INT        shift, and go to state 70
     TK_LIT_FLOAT      shift, and go to state 71
     TK_IDENTIFICADOR  shift, and go to state 51
 
-    estrutura           go to state 88
-    literal_numeric     go to state 89
-    func_call           go to state 90
-    arithmetic_operand  go to state 143
+    estrutura           go to state 89
+    literal_numeric     go to state 90
+    func_call           go to state 91
+    arithmetic_operand  go to state 145
 
 
-State 96
+State 97
 
    75 expression: ternary •
 
     $default  reduce using rule 75 (expression)
 
 
-State 97
+State 98
 
    74 expression: logic •
+  107 ternary: logic • '?' arithmetic ':' arithmetic
+  108        | logic • '?' logic ':' logic
+
+    '?'  shift, and go to state 146
 
     $default  reduce using rule 74 (expression)
 
 
-State 98
+State 99
 
    38 local_decl: TK_PR_CONST type • local_list
 
-    TK_IDENTIFICADOR  shift, and go to state 106
+    TK_IDENTIFICADOR  shift, and go to state 107
 
-    local_list      go to state 144
-    local_decl_aux  go to state 108
+    local_list      go to state 147
+    local_decl_aux  go to state 109
 
 
-State 99
+State 100
 
    37 local_decl: TK_PR_STATIC TK_PR_CONST • type local_list
 
@@ -1408,30 +1432,30 @@ State 99
     TK_PR_CHAR    shift, and go to state 4
     TK_PR_STRING  shift, and go to state 5
 
-    type  go to state 145
-
-
-State 100
-
-   39 local_decl: TK_PR_STATIC type • local_list
-
-    TK_IDENTIFICADOR  shift, and go to state 106
-
-    local_list      go to state 146
-    local_decl_aux  go to state 108
+    type  go to state 148
 
 
 State 101
 
-  112 iter_flow: TK_PR_FOR '(' • attribution ':' expression ':' attribution ')' command_block
+   39 local_decl: TK_PR_STATIC type • local_list
 
-    TK_IDENTIFICADOR  shift, and go to state 30
+    TK_IDENTIFICADOR  shift, and go to state 107
 
-    estrutura    go to state 147
-    attribution  go to state 148
+    local_list      go to state 149
+    local_decl_aux  go to state 109
 
 
 State 102
+
+  114 iter_flow: TK_PR_FOR '(' • attribution ':' expression ':' attribution ')' command_block
+
+    TK_IDENTIFICADOR  shift, and go to state 30
+
+    estrutura    go to state 150
+    attribution  go to state 151
+
+
+State 103
 
    61 func_call: TK_IDENTIFICADOR '(' • params ')'
 
@@ -1441,568 +1465,564 @@ State 102
     TK_LIT_TRUE       shift, and go to state 73
     TK_LIT_CHAR       shift, and go to state 74
     TK_LIT_STRING     shift, and go to state 75
-    TK_IDENTIFICADOR  shift, and go to state 149
-    '+'               shift, and go to state 81
-    '-'               shift, and go to state 82
+    TK_IDENTIFICADOR  shift, and go to state 51
+    '&'               shift, and go to state 81
+    '#'               shift, and go to state 82
     '*'               shift, and go to state 83
-    '&'               shift, and go to state 84
-    '#'               shift, and go to state 85
-    '!'               shift, and go to state 86
-    '?'               shift, and go to state 87
+    '('               shift, and go to state 84
+    '+'               shift, and go to state 85
+    '-'               shift, and go to state 86
+    '!'               shift, and go to state 87
+    '?'               shift, and go to state 88
 
     $default  reduce using rule 64 (param)
 
-    estrutura               go to state 88
-    literal                 go to state 150
-    literal_numeric         go to state 151
-    literal_alphabetic      go to state 79
-    literal_boolean         go to state 80
-    func_call               go to state 90
-    params                  go to state 152
-    param                   go to state 153
-    expression              go to state 154
-    arithmetic              go to state 92
-    arithmetic_operand      go to state 93
-    un_arithmetic_operator  go to state 94
-    un_logic_operator       go to state 95
-    ternary                 go to state 96
-    logic                   go to state 97
-
-
-State 103
-
-   71 shift_op: estrutura TK_OC_SL • TK_LIT_INT
-
-    TK_LIT_INT  shift, and go to state 155
+    estrutura               go to state 89
+    literal_numeric         go to state 90
+    literal_alphabetic      go to state 152
+    literal_boolean         go to state 153
+    func_call               go to state 91
+    params                  go to state 154
+    param                   go to state 155
+    expression              go to state 156
+    arithmetic              go to state 93
+    arithmetic_operand      go to state 94
+    un_arithmetic_operator  go to state 95
+    un_logic_operator       go to state 96
+    ternary                 go to state 97
+    logic                   go to state 98
 
 
 State 104
 
-   72 shift_op: estrutura TK_OC_SR • TK_LIT_INT
+   71 shift_op: estrutura TK_OC_SL • TK_LIT_INT
 
-    TK_LIT_INT  shift, and go to state 156
+    TK_LIT_INT  shift, and go to state 157
 
 
 State 105
+
+   72 shift_op: estrutura TK_OC_SR • TK_LIT_INT
+
+    TK_LIT_INT  shift, and go to state 158
+
+
+State 106
 
    57 attribution: estrutura '=' • expression
 
     TK_LIT_INT        shift, and go to state 70
     TK_LIT_FLOAT      shift, and go to state 71
     TK_IDENTIFICADOR  shift, and go to state 51
-    '+'               shift, and go to state 81
-    '-'               shift, and go to state 82
+    '&'               shift, and go to state 81
+    '#'               shift, and go to state 82
     '*'               shift, and go to state 83
-    '&'               shift, and go to state 84
-    '#'               shift, and go to state 85
-    '!'               shift, and go to state 86
-    '?'               shift, and go to state 87
+    '('               shift, and go to state 84
+    '+'               shift, and go to state 85
+    '-'               shift, and go to state 86
+    '!'               shift, and go to state 87
+    '?'               shift, and go to state 88
 
-    estrutura               go to state 88
-    literal_numeric         go to state 89
-    func_call               go to state 90
-    expression              go to state 157
-    arithmetic              go to state 92
-    arithmetic_operand      go to state 93
-    un_arithmetic_operator  go to state 94
-    un_logic_operator       go to state 95
-    ternary                 go to state 96
-    logic                   go to state 97
+    estrutura               go to state 89
+    literal_numeric         go to state 90
+    func_call               go to state 91
+    expression              go to state 159
+    arithmetic              go to state 93
+    arithmetic_operand      go to state 94
+    un_arithmetic_operator  go to state 95
+    un_logic_operator       go to state 96
+    ternary                 go to state 97
+    logic                   go to state 98
 
 
-State 106
+State 107
 
    55 local_decl_aux: TK_IDENTIFICADOR •
    56               | TK_IDENTIFICADOR • TK_OC_LE value
 
-    TK_OC_LE  shift, and go to state 158
+    TK_OC_LE  shift, and go to state 160
 
     $default  reduce using rule 55 (local_decl_aux)
 
 
-State 107
+State 108
 
    40 local_decl: type local_list •
 
     $default  reduce using rule 40 (local_decl)
 
 
-State 108
+State 109
 
    52 local_list: local_decl_aux • local_list_aux
 
-    ','  shift, and go to state 159
+    ','  shift, and go to state 161
 
     $default  reduce using rule 53 (local_list_aux)
 
-    local_list_aux  go to state 160
+    local_list_aux  go to state 162
 
 
-State 109
+State 110
 
    23 command_block: '{' command_list '}' •
 
     $default  reduce using rule 23 (command_block)
 
 
-State 110
+State 111
 
    25 command_list: simple_command command_list •
 
     $default  reduce using rule 25 (command_list)
 
 
-State 111
+State 112
 
    26 simple_command: local_decl ';' •
 
     $default  reduce using rule 26 (simple_command)
 
 
-State 112
+State 113
 
    27 simple_command: attribution ';' •
 
     $default  reduce using rule 27 (simple_command)
 
 
-State 113
+State 114
 
    28 simple_command: input_op ';' •
 
     $default  reduce using rule 28 (simple_command)
 
 
-State 114
+State 115
 
    29 simple_command: output_op ';' •
 
     $default  reduce using rule 29 (simple_command)
 
 
-State 115
+State 116
 
    30 simple_command: func_call ';' •
 
     $default  reduce using rule 30 (simple_command)
 
 
-State 116
+State 117
 
    31 simple_command: return_op ';' •
 
     $default  reduce using rule 31 (simple_command)
 
 
-State 117
+State 118
 
    32 simple_command: break_op ';' •
 
     $default  reduce using rule 32 (simple_command)
 
 
-State 118
+State 119
 
    33 simple_command: continue_op ';' •
 
     $default  reduce using rule 33 (simple_command)
 
 
-State 119
+State 120
 
    34 simple_command: shift_op ';' •
 
     $default  reduce using rule 34 (simple_command)
 
 
-State 120
+State 121
 
    35 simple_command: cond_flow ';' •
 
     $default  reduce using rule 35 (simple_command)
 
 
-State 121
+State 122
 
    36 simple_command: iter_flow ';' •
 
     $default  reduce using rule 36 (simple_command)
 
 
-State 122
-
-  106 ternary: expression • '?' expression ':' expression
-  110 cond_flow: TK_PR_IF '(' expression • ')' command_block
-  111          | TK_PR_IF '(' expression • ')' command_block TK_PR_ELSE command_block
-
-    ')'  shift, and go to state 161
-    '?'  shift, and go to state 124
-
-
 State 123
 
-  106 ternary: expression • '?' expression ':' expression
-  113 iter_flow: TK_PR_WHILE '(' expression • ')' TK_PR_DO command_block
+  112 cond_flow: TK_PR_IF '(' expression • ')' command_block
+  113          | TK_PR_IF '(' expression • ')' command_block TK_PR_ELSE command_block
 
-    ')'  shift, and go to state 162
-    '?'  shift, and go to state 124
+    ')'  shift, and go to state 163
 
 
 State 124
 
-  106 ternary: expression '?' • expression ':' expression
+  115 iter_flow: TK_PR_WHILE '(' expression • ')' TK_PR_DO command_block
 
-    TK_LIT_INT        shift, and go to state 70
-    TK_LIT_FLOAT      shift, and go to state 71
-    TK_IDENTIFICADOR  shift, and go to state 51
-    '+'               shift, and go to state 81
-    '-'               shift, and go to state 82
-    '*'               shift, and go to state 83
-    '&'               shift, and go to state 84
-    '#'               shift, and go to state 85
-    '!'               shift, and go to state 86
-    '?'               shift, and go to state 87
-
-    estrutura               go to state 88
-    literal_numeric         go to state 89
-    func_call               go to state 90
-    expression              go to state 163
-    arithmetic              go to state 92
-    arithmetic_operand      go to state 93
-    un_arithmetic_operator  go to state 94
-    un_logic_operator       go to state 95
-    ternary                 go to state 96
-    logic                   go to state 97
+    ')'  shift, and go to state 164
 
 
 State 125
 
-  100 relational_op: TK_OC_LE •
+   80 arithmetic: '(' arithmetic • ')'
 
-    $default  reduce using rule 100 (relational_op)
+    ')'  shift, and go to state 165
 
 
 State 126
 
-  102 relational_op: TK_OC_GE •
+   76 arithmetic: arithmetic_operand •
+   79           | arithmetic_operand • bin_arithmetic_operator arithmetic
 
-    $default  reduce using rule 102 (relational_op)
+    '*'  shift, and go to state 135
+    '+'  shift, and go to state 136
+    '-'  shift, and go to state 137
+    '/'  shift, and go to state 138
+    '%'  shift, and go to state 139
+    '^'  shift, and go to state 140
+
+    $default  reduce using rule 76 (arithmetic)
+
+    bin_arithmetic_operator  go to state 142
 
 
 State 127
 
-  101 relational_op: TK_OC_EQ •
+  101 relational_op: TK_OC_LE •
 
     $default  reduce using rule 101 (relational_op)
 
 
 State 128
 
-  103 relational_op: TK_OC_NE •
+  103 relational_op: TK_OC_GE •
 
     $default  reduce using rule 103 (relational_op)
 
 
 State 129
 
-  104 relational_op: '>' •
+  102 relational_op: TK_OC_EQ •
 
-    $default  reduce using rule 104 (relational_op)
+    $default  reduce using rule 102 (relational_op)
 
 
 State 130
 
-  105 relational_op: '<' •
+  104 relational_op: TK_OC_NE •
 
-    $default  reduce using rule 105 (relational_op)
+    $default  reduce using rule 104 (relational_op)
 
 
 State 131
 
-  107 logic: arithmetic relational_op • arithmetic
+  105 relational_op: '>' •
 
-    TK_LIT_INT        shift, and go to state 70
-    TK_LIT_FLOAT      shift, and go to state 71
-    TK_IDENTIFICADOR  shift, and go to state 51
-    '+'               shift, and go to state 81
-    '-'               shift, and go to state 82
-    '*'               shift, and go to state 83
-    '&'               shift, and go to state 84
-    '#'               shift, and go to state 85
-
-    estrutura               go to state 88
-    literal_numeric         go to state 89
-    func_call               go to state 90
-    arithmetic              go to state 164
-    arithmetic_operand      go to state 165
-    un_arithmetic_operator  go to state 94
+    $default  reduce using rule 105 (relational_op)
 
 
 State 132
 
-   83 bin_arithmetic_operator: '+' •
+  106 relational_op: '<' •
 
-    $default  reduce using rule 83 (bin_arithmetic_operator)
+    $default  reduce using rule 106 (relational_op)
 
 
 State 133
 
-   84 bin_arithmetic_operator: '-' •
+  109 logic: arithmetic relational_op • arithmetic
 
-    $default  reduce using rule 84 (bin_arithmetic_operator)
+    TK_LIT_INT        shift, and go to state 70
+    TK_LIT_FLOAT      shift, and go to state 71
+    TK_IDENTIFICADOR  shift, and go to state 51
+    '&'               shift, and go to state 81
+    '#'               shift, and go to state 82
+    '*'               shift, and go to state 83
+    '('               shift, and go to state 84
+    '+'               shift, and go to state 85
+    '-'               shift, and go to state 86
+
+    estrutura               go to state 89
+    literal_numeric         go to state 90
+    func_call               go to state 91
+    arithmetic              go to state 166
+    arithmetic_operand      go to state 126
+    un_arithmetic_operator  go to state 95
 
 
 State 134
 
-   85 bin_arithmetic_operator: '*' •
+   98 bin_logic_operator: '&' •
+  100                   | '&' • '&'
 
-    $default  reduce using rule 85 (bin_arithmetic_operator)
+    '&'  shift, and go to state 167
+
+    $default  reduce using rule 98 (bin_logic_operator)
 
 
 State 135
 
-   86 bin_arithmetic_operator: '/' •
+   86 bin_arithmetic_operator: '*' •
 
     $default  reduce using rule 86 (bin_arithmetic_operator)
 
 
 State 136
 
-   87 bin_arithmetic_operator: '%' •
+   84 bin_arithmetic_operator: '+' •
 
-    $default  reduce using rule 87 (bin_arithmetic_operator)
+    $default  reduce using rule 84 (bin_arithmetic_operator)
 
 
 State 137
 
-   88 bin_arithmetic_operator: '^' •
+   85 bin_arithmetic_operator: '-' •
 
-    $default  reduce using rule 88 (bin_arithmetic_operator)
+    $default  reduce using rule 85 (bin_arithmetic_operator)
 
 
 State 138
 
-   97 bin_logic_operator: '&' •
-   99                   | '&' • '&'
+   87 bin_arithmetic_operator: '/' •
 
-    '&'  shift, and go to state 166
-
-    $default  reduce using rule 97 (bin_logic_operator)
+    $default  reduce using rule 87 (bin_arithmetic_operator)
 
 
 State 139
 
-   96 bin_logic_operator: '|' •
-   98                   | '|' • '|'
+   88 bin_arithmetic_operator: '%' •
 
-    '|'  shift, and go to state 167
-
-    $default  reduce using rule 96 (bin_logic_operator)
+    $default  reduce using rule 88 (bin_arithmetic_operator)
 
 
 State 140
+
+   89 bin_arithmetic_operator: '^' •
+
+    $default  reduce using rule 89 (bin_arithmetic_operator)
+
+
+State 141
+
+   97 bin_logic_operator: '|' •
+   99                   | '|' • '|'
+
+    '|'  shift, and go to state 168
+
+    $default  reduce using rule 97 (bin_logic_operator)
+
+
+State 142
 
    79 arithmetic: arithmetic_operand bin_arithmetic_operator • arithmetic
 
     TK_LIT_INT        shift, and go to state 70
     TK_LIT_FLOAT      shift, and go to state 71
     TK_IDENTIFICADOR  shift, and go to state 51
-    '+'               shift, and go to state 81
-    '-'               shift, and go to state 82
+    '&'               shift, and go to state 81
+    '#'               shift, and go to state 82
     '*'               shift, and go to state 83
-    '&'               shift, and go to state 84
-    '#'               shift, and go to state 85
+    '('               shift, and go to state 84
+    '+'               shift, and go to state 85
+    '-'               shift, and go to state 86
 
-    estrutura               go to state 88
-    literal_numeric         go to state 89
-    func_call               go to state 90
-    arithmetic              go to state 168
-    arithmetic_operand      go to state 165
-    un_arithmetic_operator  go to state 94
-
-
-State 141
-
-  109 logic: arithmetic_operand bin_logic_operator • arithmetic_operand logic
-
-    TK_LIT_INT        shift, and go to state 70
-    TK_LIT_FLOAT      shift, and go to state 71
-    TK_IDENTIFICADOR  shift, and go to state 51
-
-    estrutura           go to state 88
-    literal_numeric     go to state 89
-    func_call           go to state 90
-    arithmetic_operand  go to state 169
-
-
-State 142
-
-   77 arithmetic: un_arithmetic_operator arithmetic_operand •
-   78           | un_arithmetic_operator arithmetic_operand • bin_arithmetic_operator arithmetic
-
-    '+'  shift, and go to state 132
-    '-'  shift, and go to state 133
-    '*'  shift, and go to state 134
-    '/'  shift, and go to state 135
-    '%'  shift, and go to state 136
-    '^'  shift, and go to state 137
-
-    $default  reduce using rule 77 (arithmetic)
-
-    bin_arithmetic_operator  go to state 170
+    estrutura               go to state 89
+    literal_numeric         go to state 90
+    func_call               go to state 91
+    arithmetic              go to state 169
+    arithmetic_operand      go to state 126
+    un_arithmetic_operator  go to state 95
 
 
 State 143
 
-  108 logic: un_logic_operator arithmetic_operand • logic
+  111 logic: arithmetic_operand bin_logic_operator • arithmetic_operand logic
 
     TK_LIT_INT        shift, and go to state 70
     TK_LIT_FLOAT      shift, and go to state 71
     TK_IDENTIFICADOR  shift, and go to state 51
-    '+'               shift, and go to state 81
-    '-'               shift, and go to state 82
-    '*'               shift, and go to state 83
-    '&'               shift, and go to state 84
-    '#'               shift, and go to state 85
-    '!'               shift, and go to state 86
-    '?'               shift, and go to state 87
 
-    estrutura               go to state 88
-    literal_numeric         go to state 89
-    func_call               go to state 90
-    arithmetic              go to state 171
-    arithmetic_operand      go to state 93
-    un_arithmetic_operator  go to state 94
-    un_logic_operator       go to state 95
-    logic                   go to state 172
+    estrutura           go to state 89
+    literal_numeric     go to state 90
+    func_call           go to state 91
+    arithmetic_operand  go to state 170
 
 
 State 144
+
+   77 arithmetic: un_arithmetic_operator arithmetic_operand •
+   78           | un_arithmetic_operator arithmetic_operand • bin_arithmetic_operator arithmetic
+
+    '*'  shift, and go to state 135
+    '+'  shift, and go to state 136
+    '-'  shift, and go to state 137
+    '/'  shift, and go to state 138
+    '%'  shift, and go to state 139
+    '^'  shift, and go to state 140
+
+    $default  reduce using rule 77 (arithmetic)
+
+    bin_arithmetic_operator  go to state 171
+
+
+State 145
+
+  110 logic: un_logic_operator arithmetic_operand • logic
+
+    TK_LIT_INT        shift, and go to state 70
+    TK_LIT_FLOAT      shift, and go to state 71
+    TK_IDENTIFICADOR  shift, and go to state 51
+    '&'               shift, and go to state 81
+    '#'               shift, and go to state 82
+    '*'               shift, and go to state 83
+    '('               shift, and go to state 84
+    '+'               shift, and go to state 85
+    '-'               shift, and go to state 86
+    '!'               shift, and go to state 87
+    '?'               shift, and go to state 88
+
+    estrutura               go to state 89
+    literal_numeric         go to state 90
+    func_call               go to state 91
+    arithmetic              go to state 172
+    arithmetic_operand      go to state 94
+    un_arithmetic_operator  go to state 95
+    un_logic_operator       go to state 96
+    logic                   go to state 173
+
+
+State 146
+
+  107 ternary: logic '?' • arithmetic ':' arithmetic
+  108        | logic '?' • logic ':' logic
+
+    TK_LIT_INT        shift, and go to state 70
+    TK_LIT_FLOAT      shift, and go to state 71
+    TK_IDENTIFICADOR  shift, and go to state 51
+    '&'               shift, and go to state 81
+    '#'               shift, and go to state 82
+    '*'               shift, and go to state 83
+    '('               shift, and go to state 84
+    '+'               shift, and go to state 85
+    '-'               shift, and go to state 86
+    '!'               shift, and go to state 87
+    '?'               shift, and go to state 88
+
+    estrutura               go to state 89
+    literal_numeric         go to state 90
+    func_call               go to state 91
+    arithmetic              go to state 174
+    arithmetic_operand      go to state 94
+    un_arithmetic_operator  go to state 95
+    un_logic_operator       go to state 96
+    logic                   go to state 175
+
+
+State 147
 
    38 local_decl: TK_PR_CONST type local_list •
 
     $default  reduce using rule 38 (local_decl)
 
 
-State 145
+State 148
 
    37 local_decl: TK_PR_STATIC TK_PR_CONST type • local_list
 
-    TK_IDENTIFICADOR  shift, and go to state 106
+    TK_IDENTIFICADOR  shift, and go to state 107
 
-    local_list      go to state 173
-    local_decl_aux  go to state 108
+    local_list      go to state 176
+    local_decl_aux  go to state 109
 
 
-State 146
+State 149
 
    39 local_decl: TK_PR_STATIC type local_list •
 
     $default  reduce using rule 39 (local_decl)
 
 
-State 147
+State 150
 
    57 attribution: estrutura • '=' expression
 
-    '='  shift, and go to state 105
-
-
-State 148
-
-  112 iter_flow: TK_PR_FOR '(' attribution • ':' expression ':' attribution ')' command_block
-
-    ':'  shift, and go to state 174
-
-
-State 149
-
-    6 estrutura: TK_IDENTIFICADOR • '[' TK_LIT_INT ']'
-    7          | TK_IDENTIFICADOR •
-   61 func_call: TK_IDENTIFICADOR • '(' params ')'
-   66 param: TK_IDENTIFICADOR •
-
-    '['  shift, and go to state 21
-    '('  shift, and go to state 102
-
-    ','       reduce using rule 7 (estrutura)
-    ','       [reduce using rule 66 (param)]
-    ')'       reduce using rule 7 (estrutura)
-    ')'       [reduce using rule 66 (param)]
-    $default  reduce using rule 7 (estrutura)
-
-
-State 150
-
-   65 param: literal •
-
-    $default  reduce using rule 65 (param)
+    '='  shift, and go to state 106
 
 
 State 151
 
-   43 literal: literal_numeric •
-   81 arithmetic_operand: literal_numeric •
+  114 iter_flow: TK_PR_FOR '(' attribution • ':' expression ':' attribution ')' command_block
 
-    ','       reduce using rule 43 (literal)
-    ','       [reduce using rule 81 (arithmetic_operand)]
-    ')'       reduce using rule 43 (literal)
-    ')'       [reduce using rule 81 (arithmetic_operand)]
-    $default  reduce using rule 81 (arithmetic_operand)
+    ':'  shift, and go to state 177
 
 
 State 152
 
-   61 func_call: TK_IDENTIFICADOR '(' params • ')'
+   65 param: literal_alphabetic •
 
-    ')'  shift, and go to state 175
+    $default  reduce using rule 65 (param)
 
 
 State 153
 
-   62 params: param •
-   63       | param • ',' params
+   66 param: literal_boolean •
 
-    ','  shift, and go to state 176
-
-    $default  reduce using rule 62 (params)
+    $default  reduce using rule 66 (param)
 
 
 State 154
 
-   67 param: expression •
-  106 ternary: expression • '?' expression ':' expression
+   61 func_call: TK_IDENTIFICADOR '(' params • ')'
 
-    '?'  shift, and go to state 124
+    ')'  shift, and go to state 178
+
+
+State 155
+
+   62 params: param •
+   63       | param • ',' params
+
+    ','  shift, and go to state 179
+
+    $default  reduce using rule 62 (params)
+
+
+State 156
+
+   67 param: expression •
 
     $default  reduce using rule 67 (param)
 
 
-State 155
+State 157
 
    71 shift_op: estrutura TK_OC_SL TK_LIT_INT •
 
     $default  reduce using rule 71 (shift_op)
 
 
-State 156
+State 158
 
    72 shift_op: estrutura TK_OC_SR TK_LIT_INT •
 
     $default  reduce using rule 72 (shift_op)
 
 
-State 157
+State 159
 
    57 attribution: estrutura '=' expression •
-  106 ternary: expression • '?' expression ':' expression
-
-    '?'  shift, and go to state 124
 
     $default  reduce using rule 57 (attribution)
 
 
-State 158
+State 160
 
    56 local_decl_aux: TK_IDENTIFICADOR TK_OC_LE • value
 
@@ -2012,211 +2032,218 @@ State 158
     TK_LIT_TRUE       shift, and go to state 73
     TK_LIT_CHAR       shift, and go to state 74
     TK_LIT_STRING     shift, and go to state 75
-    TK_IDENTIFICADOR  shift, and go to state 177
+    TK_IDENTIFICADOR  shift, and go to state 180
 
-    value               go to state 178
-    literal             go to state 179
+    value               go to state 181
+    literal             go to state 182
     literal_numeric     go to state 78
     literal_alphabetic  go to state 79
     literal_boolean     go to state 80
 
 
-State 159
+State 161
 
    54 local_list_aux: ',' • local_decl_aux local_list_aux
 
-    TK_IDENTIFICADOR  shift, and go to state 106
+    TK_IDENTIFICADOR  shift, and go to state 107
 
-    local_decl_aux  go to state 180
+    local_decl_aux  go to state 183
 
 
-State 160
+State 162
 
    52 local_list: local_decl_aux local_list_aux •
 
     $default  reduce using rule 52 (local_list)
 
 
-State 161
+State 163
 
-  110 cond_flow: TK_PR_IF '(' expression ')' • command_block
-  111          | TK_PR_IF '(' expression ')' • command_block TK_PR_ELSE command_block
+  112 cond_flow: TK_PR_IF '(' expression ')' • command_block
+  113          | TK_PR_IF '(' expression ')' • command_block TK_PR_ELSE command_block
 
     '{'  shift, and go to state 38
 
-    command_block  go to state 181
-
-
-State 162
-
-  113 iter_flow: TK_PR_WHILE '(' expression ')' • TK_PR_DO command_block
-
-    TK_PR_DO  shift, and go to state 182
-
-
-State 163
-
-  106 ternary: expression • '?' expression ':' expression
-  106        | expression '?' expression • ':' expression
-
-    '?'  shift, and go to state 124
-    ':'  shift, and go to state 183
+    command_block  go to state 184
 
 
 State 164
 
-  107 logic: arithmetic relational_op arithmetic •
+  115 iter_flow: TK_PR_WHILE '(' expression ')' • TK_PR_DO command_block
 
-    $default  reduce using rule 107 (logic)
+    TK_PR_DO  shift, and go to state 185
 
 
 State 165
 
-   76 arithmetic: arithmetic_operand •
-   79           | arithmetic_operand • bin_arithmetic_operator arithmetic
+   80 arithmetic: '(' arithmetic ')' •
 
-    '+'  shift, and go to state 132
-    '-'  shift, and go to state 133
-    '*'  shift, and go to state 134
-    '/'  shift, and go to state 135
-    '%'  shift, and go to state 136
-    '^'  shift, and go to state 137
-
-    $default  reduce using rule 76 (arithmetic)
-
-    bin_arithmetic_operator  go to state 140
+    $default  reduce using rule 80 (arithmetic)
 
 
 State 166
 
-   99 bin_logic_operator: '&' '&' •
+  109 logic: arithmetic relational_op arithmetic •
 
-    $default  reduce using rule 99 (bin_logic_operator)
+    $default  reduce using rule 109 (logic)
 
 
 State 167
 
-   98 bin_logic_operator: '|' '|' •
+  100 bin_logic_operator: '&' '&' •
 
-    $default  reduce using rule 98 (bin_logic_operator)
+    $default  reduce using rule 100 (bin_logic_operator)
 
 
 State 168
+
+   99 bin_logic_operator: '|' '|' •
+
+    $default  reduce using rule 99 (bin_logic_operator)
+
+
+State 169
 
    79 arithmetic: arithmetic_operand bin_arithmetic_operator arithmetic •
 
     $default  reduce using rule 79 (arithmetic)
 
 
-State 169
+State 170
 
-  109 logic: arithmetic_operand bin_logic_operator arithmetic_operand • logic
+  111 logic: arithmetic_operand bin_logic_operator arithmetic_operand • logic
 
     TK_LIT_INT        shift, and go to state 70
     TK_LIT_FLOAT      shift, and go to state 71
     TK_IDENTIFICADOR  shift, and go to state 51
-    '+'               shift, and go to state 81
-    '-'               shift, and go to state 82
+    '&'               shift, and go to state 81
+    '#'               shift, and go to state 82
     '*'               shift, and go to state 83
-    '&'               shift, and go to state 84
-    '#'               shift, and go to state 85
-    '!'               shift, and go to state 86
-    '?'               shift, and go to state 87
+    '('               shift, and go to state 84
+    '+'               shift, and go to state 85
+    '-'               shift, and go to state 86
+    '!'               shift, and go to state 87
+    '?'               shift, and go to state 88
 
-    estrutura               go to state 88
-    literal_numeric         go to state 89
-    func_call               go to state 90
-    arithmetic              go to state 171
-    arithmetic_operand      go to state 93
-    un_arithmetic_operator  go to state 94
-    un_logic_operator       go to state 95
-    logic                   go to state 184
+    estrutura               go to state 89
+    literal_numeric         go to state 90
+    func_call               go to state 91
+    arithmetic              go to state 172
+    arithmetic_operand      go to state 94
+    un_arithmetic_operator  go to state 95
+    un_logic_operator       go to state 96
+    logic                   go to state 186
 
 
-State 170
+State 171
 
    78 arithmetic: un_arithmetic_operator arithmetic_operand bin_arithmetic_operator • arithmetic
 
     TK_LIT_INT        shift, and go to state 70
     TK_LIT_FLOAT      shift, and go to state 71
     TK_IDENTIFICADOR  shift, and go to state 51
-    '+'               shift, and go to state 81
-    '-'               shift, and go to state 82
+    '&'               shift, and go to state 81
+    '#'               shift, and go to state 82
     '*'               shift, and go to state 83
-    '&'               shift, and go to state 84
-    '#'               shift, and go to state 85
+    '('               shift, and go to state 84
+    '+'               shift, and go to state 85
+    '-'               shift, and go to state 86
 
-    estrutura               go to state 88
-    literal_numeric         go to state 89
-    func_call               go to state 90
-    arithmetic              go to state 185
-    arithmetic_operand      go to state 165
-    un_arithmetic_operator  go to state 94
-
-
-State 171
-
-  107 logic: arithmetic • relational_op arithmetic
-
-    TK_OC_LE  shift, and go to state 125
-    TK_OC_GE  shift, and go to state 126
-    TK_OC_EQ  shift, and go to state 127
-    TK_OC_NE  shift, and go to state 128
-    '>'       shift, and go to state 129
-    '<'       shift, and go to state 130
-
-    relational_op  go to state 131
+    estrutura               go to state 89
+    literal_numeric         go to state 90
+    func_call               go to state 91
+    arithmetic              go to state 187
+    arithmetic_operand      go to state 126
+    un_arithmetic_operator  go to state 95
 
 
 State 172
 
-  108 logic: un_logic_operator arithmetic_operand logic •
+  109 logic: arithmetic • relational_op arithmetic
 
-    $default  reduce using rule 108 (logic)
+    TK_OC_LE  shift, and go to state 127
+    TK_OC_GE  shift, and go to state 128
+    TK_OC_EQ  shift, and go to state 129
+    TK_OC_NE  shift, and go to state 130
+    '>'       shift, and go to state 131
+    '<'       shift, and go to state 132
+
+    relational_op  go to state 133
 
 
 State 173
+
+  110 logic: un_logic_operator arithmetic_operand logic •
+
+    $default  reduce using rule 110 (logic)
+
+
+State 174
+
+  107 ternary: logic '?' arithmetic • ':' arithmetic
+  109 logic: arithmetic • relational_op arithmetic
+
+    TK_OC_LE  shift, and go to state 127
+    TK_OC_GE  shift, and go to state 128
+    TK_OC_EQ  shift, and go to state 129
+    TK_OC_NE  shift, and go to state 130
+    '>'       shift, and go to state 131
+    '<'       shift, and go to state 132
+    ':'       shift, and go to state 188
+
+    relational_op  go to state 133
+
+
+State 175
+
+  108 ternary: logic '?' logic • ':' logic
+
+    ':'  shift, and go to state 189
+
+
+State 176
 
    37 local_decl: TK_PR_STATIC TK_PR_CONST type local_list •
 
     $default  reduce using rule 37 (local_decl)
 
 
-State 174
+State 177
 
-  112 iter_flow: TK_PR_FOR '(' attribution ':' • expression ':' attribution ')' command_block
+  114 iter_flow: TK_PR_FOR '(' attribution ':' • expression ':' attribution ')' command_block
 
     TK_LIT_INT        shift, and go to state 70
     TK_LIT_FLOAT      shift, and go to state 71
     TK_IDENTIFICADOR  shift, and go to state 51
-    '+'               shift, and go to state 81
-    '-'               shift, and go to state 82
+    '&'               shift, and go to state 81
+    '#'               shift, and go to state 82
     '*'               shift, and go to state 83
-    '&'               shift, and go to state 84
-    '#'               shift, and go to state 85
-    '!'               shift, and go to state 86
-    '?'               shift, and go to state 87
+    '('               shift, and go to state 84
+    '+'               shift, and go to state 85
+    '-'               shift, and go to state 86
+    '!'               shift, and go to state 87
+    '?'               shift, and go to state 88
 
-    estrutura               go to state 88
-    literal_numeric         go to state 89
-    func_call               go to state 90
-    expression              go to state 186
-    arithmetic              go to state 92
-    arithmetic_operand      go to state 93
-    un_arithmetic_operator  go to state 94
-    un_logic_operator       go to state 95
-    ternary                 go to state 96
-    logic                   go to state 97
+    estrutura               go to state 89
+    literal_numeric         go to state 90
+    func_call               go to state 91
+    expression              go to state 190
+    arithmetic              go to state 93
+    arithmetic_operand      go to state 94
+    un_arithmetic_operator  go to state 95
+    un_logic_operator       go to state 96
+    ternary                 go to state 97
+    logic                   go to state 98
 
 
-State 175
+State 178
 
    61 func_call: TK_IDENTIFICADOR '(' params ')' •
 
     $default  reduce using rule 61 (func_call)
 
 
-State 176
+State 179
 
    63 params: param ',' • params
 
@@ -2226,211 +2253,233 @@ State 176
     TK_LIT_TRUE       shift, and go to state 73
     TK_LIT_CHAR       shift, and go to state 74
     TK_LIT_STRING     shift, and go to state 75
-    TK_IDENTIFICADOR  shift, and go to state 149
-    '+'               shift, and go to state 81
-    '-'               shift, and go to state 82
+    TK_IDENTIFICADOR  shift, and go to state 51
+    '&'               shift, and go to state 81
+    '#'               shift, and go to state 82
     '*'               shift, and go to state 83
-    '&'               shift, and go to state 84
-    '#'               shift, and go to state 85
-    '!'               shift, and go to state 86
-    '?'               shift, and go to state 87
+    '('               shift, and go to state 84
+    '+'               shift, and go to state 85
+    '-'               shift, and go to state 86
+    '!'               shift, and go to state 87
+    '?'               shift, and go to state 88
 
     $default  reduce using rule 64 (param)
 
-    estrutura               go to state 88
-    literal                 go to state 150
-    literal_numeric         go to state 151
-    literal_alphabetic      go to state 79
-    literal_boolean         go to state 80
-    func_call               go to state 90
-    params                  go to state 187
-    param                   go to state 153
-    expression              go to state 154
-    arithmetic              go to state 92
-    arithmetic_operand      go to state 93
-    un_arithmetic_operator  go to state 94
-    un_logic_operator       go to state 95
-    ternary                 go to state 96
-    logic                   go to state 97
+    estrutura               go to state 89
+    literal_numeric         go to state 90
+    literal_alphabetic      go to state 152
+    literal_boolean         go to state 153
+    func_call               go to state 91
+    params                  go to state 191
+    param                   go to state 155
+    expression              go to state 156
+    arithmetic              go to state 93
+    arithmetic_operand      go to state 94
+    un_arithmetic_operator  go to state 95
+    un_logic_operator       go to state 96
+    ternary                 go to state 97
+    logic                   go to state 98
 
 
-State 177
+State 180
 
    41 value: TK_IDENTIFICADOR •
 
     $default  reduce using rule 41 (value)
 
 
-State 178
+State 181
 
    56 local_decl_aux: TK_IDENTIFICADOR TK_OC_LE value •
 
     $default  reduce using rule 56 (local_decl_aux)
 
 
-State 179
+State 182
 
    42 value: literal •
 
     $default  reduce using rule 42 (value)
 
 
-State 180
+State 183
 
    54 local_list_aux: ',' local_decl_aux • local_list_aux
 
-    ','  shift, and go to state 159
+    ','  shift, and go to state 161
 
     $default  reduce using rule 53 (local_list_aux)
 
-    local_list_aux  go to state 188
-
-
-State 181
-
-  110 cond_flow: TK_PR_IF '(' expression ')' command_block •
-  111          | TK_PR_IF '(' expression ')' command_block • TK_PR_ELSE command_block
-
-    TK_PR_ELSE  shift, and go to state 189
-
-    $default  reduce using rule 110 (cond_flow)
-
-
-State 182
-
-  113 iter_flow: TK_PR_WHILE '(' expression ')' TK_PR_DO • command_block
-
-    '{'  shift, and go to state 38
-
-    command_block  go to state 190
-
-
-State 183
-
-  106 ternary: expression '?' expression ':' • expression
-
-    TK_LIT_INT        shift, and go to state 70
-    TK_LIT_FLOAT      shift, and go to state 71
-    TK_IDENTIFICADOR  shift, and go to state 51
-    '+'               shift, and go to state 81
-    '-'               shift, and go to state 82
-    '*'               shift, and go to state 83
-    '&'               shift, and go to state 84
-    '#'               shift, and go to state 85
-    '!'               shift, and go to state 86
-    '?'               shift, and go to state 87
-
-    estrutura               go to state 88
-    literal_numeric         go to state 89
-    func_call               go to state 90
-    expression              go to state 191
-    arithmetic              go to state 92
-    arithmetic_operand      go to state 93
-    un_arithmetic_operator  go to state 94
-    un_logic_operator       go to state 95
-    ternary                 go to state 96
-    logic                   go to state 97
+    local_list_aux  go to state 192
 
 
 State 184
 
-  109 logic: arithmetic_operand bin_logic_operator arithmetic_operand logic •
+  112 cond_flow: TK_PR_IF '(' expression ')' command_block •
+  113          | TK_PR_IF '(' expression ')' command_block • TK_PR_ELSE command_block
 
-    $default  reduce using rule 109 (logic)
+    TK_PR_ELSE  shift, and go to state 193
+
+    $default  reduce using rule 112 (cond_flow)
 
 
 State 185
+
+  115 iter_flow: TK_PR_WHILE '(' expression ')' TK_PR_DO • command_block
+
+    '{'  shift, and go to state 38
+
+    command_block  go to state 194
+
+
+State 186
+
+  111 logic: arithmetic_operand bin_logic_operator arithmetic_operand logic •
+
+    $default  reduce using rule 111 (logic)
+
+
+State 187
 
    78 arithmetic: un_arithmetic_operator arithmetic_operand bin_arithmetic_operator arithmetic •
 
     $default  reduce using rule 78 (arithmetic)
 
 
-State 186
+State 188
 
-  106 ternary: expression • '?' expression ':' expression
-  112 iter_flow: TK_PR_FOR '(' attribution ':' expression • ':' attribution ')' command_block
+  107 ternary: logic '?' arithmetic ':' • arithmetic
 
-    '?'  shift, and go to state 124
-    ':'  shift, and go to state 192
+    TK_LIT_INT        shift, and go to state 70
+    TK_LIT_FLOAT      shift, and go to state 71
+    TK_IDENTIFICADOR  shift, and go to state 51
+    '&'               shift, and go to state 81
+    '#'               shift, and go to state 82
+    '*'               shift, and go to state 83
+    '('               shift, and go to state 84
+    '+'               shift, and go to state 85
+    '-'               shift, and go to state 86
+
+    estrutura               go to state 89
+    literal_numeric         go to state 90
+    func_call               go to state 91
+    arithmetic              go to state 195
+    arithmetic_operand      go to state 126
+    un_arithmetic_operator  go to state 95
 
 
-State 187
+State 189
+
+  108 ternary: logic '?' logic ':' • logic
+
+    TK_LIT_INT        shift, and go to state 70
+    TK_LIT_FLOAT      shift, and go to state 71
+    TK_IDENTIFICADOR  shift, and go to state 51
+    '&'               shift, and go to state 81
+    '#'               shift, and go to state 82
+    '*'               shift, and go to state 83
+    '('               shift, and go to state 84
+    '+'               shift, and go to state 85
+    '-'               shift, and go to state 86
+    '!'               shift, and go to state 87
+    '?'               shift, and go to state 88
+
+    estrutura               go to state 89
+    literal_numeric         go to state 90
+    func_call               go to state 91
+    arithmetic              go to state 172
+    arithmetic_operand      go to state 94
+    un_arithmetic_operator  go to state 95
+    un_logic_operator       go to state 96
+    logic                   go to state 196
+
+
+State 190
+
+  114 iter_flow: TK_PR_FOR '(' attribution ':' expression • ':' attribution ')' command_block
+
+    ':'  shift, and go to state 197
+
+
+State 191
 
    63 params: param ',' params •
 
     $default  reduce using rule 63 (params)
 
 
-State 188
+State 192
 
    54 local_list_aux: ',' local_decl_aux local_list_aux •
 
     $default  reduce using rule 54 (local_list_aux)
 
 
-State 189
+State 193
 
-  111 cond_flow: TK_PR_IF '(' expression ')' command_block TK_PR_ELSE • command_block
+  113 cond_flow: TK_PR_IF '(' expression ')' command_block TK_PR_ELSE • command_block
 
     '{'  shift, and go to state 38
 
-    command_block  go to state 193
-
-
-State 190
-
-  113 iter_flow: TK_PR_WHILE '(' expression ')' TK_PR_DO command_block •
-
-    $default  reduce using rule 113 (iter_flow)
-
-
-State 191
-
-  106 ternary: expression • '?' expression ':' expression
-  106        | expression '?' expression ':' expression •
-
-    '?'  shift, and go to state 124
-
-    '?'       [reduce using rule 106 (ternary)]
-    $default  reduce using rule 106 (ternary)
-
-
-State 192
-
-  112 iter_flow: TK_PR_FOR '(' attribution ':' expression ':' • attribution ')' command_block
-
-    TK_IDENTIFICADOR  shift, and go to state 30
-
-    estrutura    go to state 147
-    attribution  go to state 194
-
-
-State 193
-
-  111 cond_flow: TK_PR_IF '(' expression ')' command_block TK_PR_ELSE command_block •
-
-    $default  reduce using rule 111 (cond_flow)
+    command_block  go to state 198
 
 
 State 194
 
-  112 iter_flow: TK_PR_FOR '(' attribution ':' expression ':' attribution • ')' command_block
+  115 iter_flow: TK_PR_WHILE '(' expression ')' TK_PR_DO command_block •
 
-    ')'  shift, and go to state 195
+    $default  reduce using rule 115 (iter_flow)
 
 
 State 195
 
-  112 iter_flow: TK_PR_FOR '(' attribution ':' expression ':' attribution ')' • command_block
+  107 ternary: logic '?' arithmetic ':' arithmetic •
 
-    '{'  shift, and go to state 38
-
-    command_block  go to state 196
+    $default  reduce using rule 107 (ternary)
 
 
 State 196
 
-  112 iter_flow: TK_PR_FOR '(' attribution ':' expression ':' attribution ')' command_block •
+  108 ternary: logic '?' logic ':' logic •
 
-    $default  reduce using rule 112 (iter_flow)
+    $default  reduce using rule 108 (ternary)
+
+
+State 197
+
+  114 iter_flow: TK_PR_FOR '(' attribution ':' expression ':' • attribution ')' command_block
+
+    TK_IDENTIFICADOR  shift, and go to state 30
+
+    estrutura    go to state 150
+    attribution  go to state 199
+
+
+State 198
+
+  113 cond_flow: TK_PR_IF '(' expression ')' command_block TK_PR_ELSE command_block •
+
+    $default  reduce using rule 113 (cond_flow)
+
+
+State 199
+
+  114 iter_flow: TK_PR_FOR '(' attribution ':' expression ':' attribution • ')' command_block
+
+    ')'  shift, and go to state 200
+
+
+State 200
+
+  114 iter_flow: TK_PR_FOR '(' attribution ':' expression ':' attribution ')' • command_block
+
+    '{'  shift, and go to state 38
+
+    command_block  go to state 201
+
+
+State 201
+
+  114 iter_flow: TK_PR_FOR '(' attribution ':' expression ':' attribution ')' command_block •
+
+    $default  reduce using rule 114 (iter_flow)

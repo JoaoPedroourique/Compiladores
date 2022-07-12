@@ -1,5 +1,0 @@
-int variavel[2];
-static int funct(const int var, float var2){
-    return 3 * (2 + 3);
-
-}
