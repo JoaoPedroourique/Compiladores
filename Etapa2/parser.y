@@ -104,7 +104,9 @@ simple_command: local_decl';'
 	| return_op';'
 	| break_op';'
 	| continue_op';'
-	| shift_op';';
+	| shift_op';'
+	| cond_flow';'
+	| iter_flow';';
 
 // Declaracao de variavel local
 
@@ -175,15 +177,39 @@ shift_op: estrutura TK_OC_SL  TK_LIT_INT
 	
 // 3.5 Expr. aritmeticas, logicas
 
-expression: arithmetic | logic;
+expression: arithmetic 
+	| logic
+	| ternary;
 
 arithmetic: arithmetic_operand
-	| arithmetic_operand arithmetic_operator arithmetic;
+	| un_arithmetic_operator arithmetic_operand
+	| un_arithmetic_operator arithmetic_operand bin_arithmetic_operator arithmetic
+	| arithmetic_operand bin_arithmetic_operator arithmetic;
 
-arithmetic_operand: TK_IDENTIFICADOR'['TK_LIT_INT']'
-	| TK_IDENTIFICADOR
+arithmetic_operand: TK_IDENTIFICADOR '[' TK_LIT_INT ']'
 	| literal_numeric
 	| func_call;
+	
+bin_arithmetic_operator: '+'
+	| '-'
+	| '*'
+	| '/'
+	| '%'
+	| '^';
+
+un_arithmetic_operator: '+'
+	| '-'
+	| '&'
+	| '*'
+	| '#';
+	
+un_logic_operator: '!'
+	| '?';
+	
+bin_logic_operator: '|'
+	| '&'
+	| '|''|'
+	| '&''&';
 	
 relational_op: TK_OC_LE
 	| TK_OC_EQ
@@ -192,22 +218,19 @@ relational_op: TK_OC_LE
 	| '>'
 	| '<';
 
-unary_op: list all
+ternary: logic '?' arithmetic ':' arithmetic
+	| logic '?' logic ':' logic;
 
-binary_op: list all
 
-logic: provavelmente precisa usar um aux q aceite vazio, pra evitar de aceitar uma expressao logica vazia e a recursão dar certo
-	| arithmetic relational_op arithmetic
-	| unary_op arithmetic_operand logic
-	| arithmetic_operand binary_op arithmetic_operand logic
-	| TODO ternary;
-
+logic: arithmetic relational_op arithmetic
+	| un_logic_operator arithmetic_operand logic
+	| arithmetic_operand bin_logic_operator arithmetic_operand logic;
 
 
 // Comandos de controle de fluxo
 
 cond_flow: TK_PR_IF '(' expression')' command_block
-	| TK_PR_IF '(' expression')' command_block TK_PR_ELSE command_block
+	| TK_PR_IF '(' expression')' command_block TK_PR_ELSE command_block;
 
 iter_flow: TK_PR_FOR '(' attribution ':' expression ':' attribution')' command_block
 	| TK_PR_WHILE '(' expression')' TK_PR_DO command_block
