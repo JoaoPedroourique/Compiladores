@@ -159,7 +159,6 @@ params: param
 	
 param: %empty
 	| literal
-	| TK_IDENTIFICADOR
 	| expression;
 
 // Comando de Retorno, Break, Continue
@@ -186,7 +185,7 @@ arithmetic: arithmetic_operand
 	| un_arithmetic_operator arithmetic_operand bin_arithmetic_operator arithmetic
 	| arithmetic_operand bin_arithmetic_operator arithmetic;
 
-arithmetic_operand: TK_IDENTIFICADOR '[' TK_LIT_INT ']'
+arithmetic_operand: estrutura
 	| literal_numeric
 	| func_call;
 	
